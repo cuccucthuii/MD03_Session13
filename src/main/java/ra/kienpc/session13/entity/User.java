@@ -1,5 +1,6 @@
 package ra.kienpc.session13.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,6 +23,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
     String username;
+    @JsonIgnore
     String password;
     String role;
     boolean enabled = true;

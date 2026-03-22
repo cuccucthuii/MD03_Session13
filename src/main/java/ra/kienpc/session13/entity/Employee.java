@@ -1,18 +1,27 @@
 package ra.kienpc.session13.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
-import java.math.BigDecimal;
-
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Table(name = "employees")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Employee {
-    private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
     private String fullName;
-    private double salary;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    private String department;
+
+    private String avatarUrl;
 }

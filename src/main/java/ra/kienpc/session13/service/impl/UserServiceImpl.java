@@ -1,6 +1,7 @@
 package ra.kienpc.session13.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,8 +13,12 @@ import org.springframework.web.client.HttpClientErrorException;
 import ra.kienpc.session13.entity.LoginRequest;
 import ra.kienpc.session13.entity.RegisterRequest;
 import ra.kienpc.session13.entity.User;
+import ra.kienpc.session13.entity.dto.JwtResponse;
 import ra.kienpc.session13.repository.UserRepository;
+import ra.kienpc.session13.security.jwt.JwtService;
 import ra.kienpc.session13.service.IUserService;
+
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +26,9 @@ public class UserServiceImpl implements IUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    @Value("${jwt.expired}")
+    private Long expired;
 
     @Override
     public void register(RegisterRequest request) {
@@ -37,14 +45,22 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User login(LoginRequest request) {
+    public JwtResponse login(LoginRequest request) {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
             // xác minh thznh công
             String u = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             System.out.println("user" + u);
-            return userRepository.findByUsername(request.getUsername())
-                    .orElseThrow();
+
+            String accessToken = jwtService.generateAccessToken(request.getUsername());
+            String refreshToken = jwtService.generateRefreshToken(request.getUsername());
+
+            return JwtResponse.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .user(userRepository.findByUsername(request.getUsername()).orElseThrow())
+                    .expired(new Date(new  Date().getTime() + expired))
+                    .build();
     }
 }

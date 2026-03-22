@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ra.kienpc.session13.entity.User;
-import ra.kienpc.session13.principal.UserPrincipal;
+import ra.kienpc.session13.security.principal.UserPrincipal;
 import ra.kienpc.session13.repository.UserRepository;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package ra.kienpc.session13.principal;
+package ra.kienpc.session13.security.principal;
 
 import lombok.Builder;
 import org.jspecify.annotations.Nullable;
